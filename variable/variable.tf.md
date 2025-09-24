@@ -27,8 +27,3 @@ variable "instance_type" {
 }
 ```
 
-
-```bash
-terraform apply
-```
-
