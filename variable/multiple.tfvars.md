@@ -52,6 +52,9 @@ instance_type    = "t2.micro"
 environment_name = "production"
 ```
 
+---
+
+
 ```bash
 terraform plan -var-file="stage.tfvars"
 terraform apply -var-file="stage.tfvars"
