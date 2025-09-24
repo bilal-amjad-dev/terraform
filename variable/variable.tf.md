@@ -1,0 +1,32 @@
+
+`main.tf`
+
+```bash
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "ec2_example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = var.instance_type
+
+  tags = {
+    Name = "Terraform EC2"
+  }
+}
+```
+
+
+`variable.tf`
+
+```bash
+variable "instance_type" {
+  description = "Type of instance to create"
+  type        = string
+  default     = "t2.micro"
+}
+
+```bash
+terraform apply
+```
+```
