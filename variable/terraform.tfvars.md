@@ -30,7 +30,7 @@ variable "instance_type" {
 `terraform.tfvars`
 
 ```bash
-default     = "t2.micro"
+instance_type     = "t2.micro"
 ```
 
 
