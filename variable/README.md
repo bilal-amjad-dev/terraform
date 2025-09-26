@@ -7,7 +7,7 @@ In variable, we have 2 types of variables:
   - [multiple.tfvars](https://github.com/bilal-amjad-dev/terraform/blob/main/variable/multiple.tfvars.md)
   - [command-line-variable](https://github.com/bilal-amjad-dev/terraform/blob/main/variable/command-line-variable.md)
 
-- Output variable
+- [Output variable](https://github.com/bilal-amjad-dev/terraform/blob/main/variable/output.md)
 
 
 In variable, we have different data types:
