@@ -90,3 +90,76 @@ file("${path.module}/script.sh")
 > **`path.module` always points to the current module’s folder.**
 
 That’s it. No complexity 😊
+
+
+
+No problem 🙂 I’ll explain **very slowly and simply**.
+
+### Step 1: Look at the folders
+
+```
+my-project/
+│
+├─ main.tf              ← ROOT file
+└─ modules/
+   └─ ec2/
+      ├─ main.tf        ← EC2 MODULE file
+      └─ script.sh
+```
+
+---
+
+### Step 2: Where is `script.sh`?
+
+📍 `script.sh` is **inside the ec2 folder**
+
+So the rule is:
+
+> **The file that uses `script.sh` must be in the SAME folder (module).**
+
+---
+
+### Step 3: Where to write `path.module`?
+
+✅ Write this **inside**:
+
+```
+modules/ec2/main.tf
+```
+
+Example:
+
+```hcl
+resource "aws_instance" "example" {
+  user_data = file("${path.module}/script.sh")
+}
+```
+
+---
+
+### Step 4: What about root `main.tf`?
+
+❌ Do **NOT** write it here:
+
+```
+my-project/main.tf
+```
+
+Root `main.tf` is only for:
+
+```hcl
+module "ec2" {
+  source = "./modules/ec2"
+}
+```
+
+It should **not** read `script.sh`.
+
+---
+
+### One simple sentence (remember this)
+
+> **Script jahan ho, `path.module` wahi likho.**
+
+That’s all 😊
+
