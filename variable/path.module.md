@@ -5,6 +5,14 @@ Here is your **fixed, clean, and well-structured version of the notes**, with no
 
 ---
 
+### Quick Reference
+
+| Variable      | Kya deta hai?                 | Kab use karte hain?                                                                        |
+| ------------- | ----------------------------- | ------------------------------------------------------------------------------------------ |
+| `path.module` | Current module ka folder path | Child modules mein files ya templates read karne ke liye (**99% cases mein yahi chahiye**) |
+
+---
+
 ```
 my-project/
 │
