@@ -11,6 +11,9 @@ we do countindex, it understand that it has used list
 - [count.index]
 
 
+- `type = list`: Variable ki data type list honi chahiye (ya map bhi ho sakti hai, lekin list common hai).
+- `count = length(var.your_variable)`: length() function us list ki total items ko count karta hai, aur utne hi resources create hote hain.
+- `[count.index]`: Resource ke andar, aap count.index use karke list ki individual values (0-based index par) access karte hain.
 
 `main.tf`
 
