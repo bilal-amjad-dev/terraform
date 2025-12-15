@@ -37,6 +37,10 @@ variable "availability_zones" {
   default = ["ap-south-1a", "ap-south-1b"]
 }
 
+variable "project_name" {
+  default = "main"
+}
+```
 
 ---
 
@@ -57,8 +61,6 @@ resource "aws_s3_bucket" "example" {
 }
 
 ```
-variable "project_name" {
-  default = "main"
-}
 
-```
+
+
