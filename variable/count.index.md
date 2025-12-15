@@ -8,7 +8,7 @@ we do countindex, it understand that it has used list
 > Yani variable ki type list honi chahia and count = length hona chahia
 - type = list
 - count = length()
-- [count.index[
+- [count.index]
 
 
 
