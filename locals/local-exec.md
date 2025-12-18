@@ -3,131 +3,53 @@
 
 Copilot:
 
-Exactly Bilal ✅ — you’ve got the right idea. Let me show you how **SIG + Packer + Terraform** can be wired together so that when you run `terraform apply`, it automatically triggers Packer to build the image, then publishes it into the **Shared Image Gallery (SIG)**.
+Got it Bilal 👍 — let’s make **local‑exec** super simple.
 
 ---
 
-## 🧩 Integration Pattern: Terraform + Packer
-
-### 1. Packer Template (build golden image)
-`packer.json`
-```json
-{
-  "builders": [{
-    "type": "azure-arm",
-    "subscription_id": "<sub-id>",
-    "client_id": "<app-id>",
-    "client_secret": "<password>",
-    "tenant_id": "<tenant-id>",
-
-    "managed_image_resource_group_name": "rg-image-gallery",
-    "managed_image_name": "myManagedImage",
-    "managed_image_location": "East US",
-
-    "os_type": "Windows",
-    "image_publisher": "MicrosoftWindowsDesktop",
-    "image_offer": "windows-11",
-    "image_sku": "win11-22h2-pro"
-  }],
-  "provisioners": [{
-    "type": "powershell",
-    "inline": [
-      "Write-Host 'Installing FSLogix...'",
-      "choco install fslogix -y"
-    ]
-  }]
-}
-```
+## 🛠️ What is `local-exec`?
+- In **Terraform**, `local-exec` is a way to tell Terraform:  
+  👉 “Run this command on **my local machine** (or the machine where Terraform is running) after creating a resource.”
 
 ---
 
-### 2. Terraform Code (trigger Packer + publish to SIG)
-
+## 🔍 Example
 ```hcl
-provider "azurerm" {
-  features {}
-}
-
-# Resource Group
-resource "azurerm_resource_group" "rg" {
-  name     = "rg-image-gallery"
-  location = "East US"
-}
-
-# Run Packer automatically before SIG setup
-resource "null_resource" "packer_build" {
+resource "null_resource" "example" {
   provisioner "local-exec" {
-    command = "powershell ./scripts/build-image.ps1"
+    command = "echo Hello Bilal"
   }
-}
-
-# Shared Image Gallery
-resource "azurerm_shared_image_gallery" "gallery" {
-  name                = "myGallery"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  description         = "Golden Image Gallery for AVD"
-}
-
-# Shared Image Definition
-resource "azurerm_shared_image" "image_def" {
-  name                = "myGoldenImage"
-  gallery_name        = azurerm_shared_image_gallery.gallery.name
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  os_type             = "Windows"
-
-  identifier {
-    publisher = "BilalLabs"
-    offer     = "GoldenImageOffer"
-    sku       = "v1"
-  }
-}
-
-# Shared Image Version (depends on Packer run)
-resource "azurerm_shared_image_version" "image_version" {
-  depends_on          = [null_resource.packer_build]
-  name                = "1.0.0"
-  gallery_name        = azurerm_shared_image_gallery.gallery.name
-  image_name          = azurerm_shared_image.image_def.name
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-
-  target_region {
-    name                   = "East US"
-    regional_replica_count = 1
-    storage_account_type   = "Standard_LRS"
-  }
-
-  managed_image_id = "/subscriptions/<sub-id>/resourceGroups/rg-image-gallery/providers/Microsoft.Compute/images/myManagedImage"
 }
 ```
 
+- When you run `terraform apply`, Terraform will **create the resource** (here it’s just a dummy `null_resource`).  
+- Then it will run the command:  
+  ```
+  echo Hello Bilal
+  ```
+- That prints “Hello Bilal” in your terminal.
+
 ---
 
-### 3. PowerShell Script (`scripts/build-image.ps1`)
-```powershell
-Write-Host "Running Packer build..."
-packer build ./packer.json
-```
-
----
-
-## 🔍 Flow
-1. You run `terraform apply`.  
-2. Terraform executes the `null_resource` → runs `build-image.ps1`.  
-3. That script calls **Packer** → builds the Managed Image.  
-4. Terraform then publishes that image into **SIG** as a version.  
+## 🧩 Why It’s Useful
+- To **trigger scripts** (like `.ps1` or `.sh`) after Terraform runs.  
+- To **call Packer** automatically (`packer build packer.json`).  
+- To run any local automation (install tools, notify, etc).
 
 ---
 
 ## ✅ Crux
-- **Packer** = builds the golden image.  
-- **Terraform** = organizes it into SIG.  
-- **null_resource + local-exec** = glue that makes Packer run automatically during `terraform apply`.  
+- **local-exec = Terraform’s way of running a local command/script.**  
+- It doesn’t run inside Azure or AWS — it runs **where Terraform is executed**.  
+- That’s why in your lab, Terraform used `local-exec` to call a PowerShell script (`.ps1`) → which triggered **Packer**.
 
 ---
 
-👉 This is exactly what you saw in your lab: the `.ps1` script was wired into Terraform, so Packer got triggered automatically.  
+👉 Analogy:  
+- Terraform = the manager.  
+- `local-exec` = the manager saying: “Hey, run this command on my laptop right now.”  
+- That’s how Packer got triggered automatically in your lab.
 
-Bilal, would you like me to extend this with a **bonus step**: deploy a VM from the SIG version, so you can actually boot a machine from your golden image and confirm everything works end‑to‑end?
+---
+
+Bilal, would you like me to show you a **mini demo code** where `local-exec` runs a PowerShell script to build a Packer image, so you can see exactly how it ties into your SIG workflow?
