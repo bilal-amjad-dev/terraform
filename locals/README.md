@@ -27,6 +27,9 @@ OK! Let me make it **super simple**.
 
 Think of `locals` like giving a **nickname** to something long, so you don't have to type it again and again.
 
+`locals` = **Give a name to something, then use it many times**
+
+
 ---
 
 ## Example 1: Without locals (repeating)
