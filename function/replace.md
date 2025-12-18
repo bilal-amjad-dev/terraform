@@ -84,7 +84,7 @@ Or are you asking because you saw `replace()` somewhere in your code and it's ca
 
 ---
 
-# Example 
+# Example AVD + Packer + Terraform
 
 Great question! Let me break down **exactly** what's happening in that line:
 
