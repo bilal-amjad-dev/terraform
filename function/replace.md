@@ -81,3 +81,75 @@ Sometimes you need to:
 **Is this clearer now?** 
 
 Or are you asking because you saw `replace()` somewhere in your code and it's causing an error? If so, **show me that line** and I'll explain what it's doing specifically!
+
+---
+
+# Example 
+
+Great question! Let me break down **exactly** what's happening in that line:
+
+```terraform
+name = replace("${var.prefix}_sig_${var.environment}_${var.team}", "-", "_")
+```
+
+---
+
+## Step-by-Step Breakdown:
+
+### Step 1: Build the string first
+```terraform
+"${var.prefix}_sig_${var.environment}_${var.team}"
+```
+
+**Example values:**
+- `var.prefix` = `"my-app"`
+- `var.environment` = `"dev"`
+- `var.team` = `"backend-team"`
+
+**String becomes:**
+```
+"my-app_sig_dev_backend-team"
+```
+
+---
+
+### Step 2: Apply `replace()`
+```terraform
+replace("my-app_sig_dev_backend-team", "-", "_")
+```
+
+This **finds all hyphens `-`** and **replaces them with underscores `_`**
+
+**Final result:**
+```
+"my_app_sig_dev_backend_team"
+```
+
+---
+
+## Summary:
+
+| Before `replace()` | After `replace()` |
+|-------------------|------------------|
+| `my-app_sig_dev_backend-team` | `my_app_sig_dev_backend_team` |
+
+**Why?** Many AWS resources (like DynamoDB tables, IAM roles, etc.) don't allow hyphens or have naming restrictions. This ensures the name only uses underscores.
+
+---
+
+## Another Example:
+
+If your variables were:
+- `prefix` = `"data-lake"`
+- `environment` = `"prod"`
+- `team` = `"ml-team"`
+
+Then:
+```
+Before: "data-lake_sig_prod_ml-team"
+After:  "data_lake_sig_prod_ml_team"
+```
+
+---
+
+**Does this make sense now?** The code is just making sure all hyphens become underscores in the final name! 🎯
