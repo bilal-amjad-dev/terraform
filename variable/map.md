@@ -67,3 +67,24 @@ resource "aws_instance" "web" {
 **Perfect for:** Tags, regions, environments, configs in one place!
 
 **Your notes format is excellent - crisp and clear!** 👍
+
+
+---
+
+Tag?
+
+What it is: A Key-Value Pair
+
+In AWS or Azure, a tag isn't just a word; it is always a Key and a Value.
+
+Key: Environment
+
+Value: Dev
+
+In Terraform, a map(string) is just a list of these pairs.
+
+Why we do it this way (The Logic)
+
+1. The "Default ={}" (The Empty Box)
+
+When you see default = {}, it means the "box" is empty. If you don't provide any tags, Terraform won't crash; it will just apply zero tags. It’s like saying, "I have a label maker, but I haven't typed anything yet."
