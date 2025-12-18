@@ -13,6 +13,7 @@ resource "aws_instance" "example" {
   }
 }
 ```
+---
 
 18-December-2025
 
@@ -20,7 +21,7 @@ Claude
 
 OK! Let me make it **super simple**.
 
----
+
 
 ## `locals` = **Nickname** or **Shortcut**
 
