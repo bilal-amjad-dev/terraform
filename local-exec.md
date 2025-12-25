@@ -4,41 +4,31 @@
 
 Copilot
 
+> **Tip:** `local-exec` runs *where Terraform runs*, not inside the AWS resource itself.  
 
-### `provisioner "local-exec"`**
-- **Purpose**: Runs a command *locally* on the machine where you execute `terraform apply`.  
-- **Use cases**:
-  - Triggering external scripts or tools (e.g., running `packer build` after Terraform creates a resource).  
-  - Sending notifications (e.g., curl to a webhook).  
-  - Running CLI commands that aren’t directly supported by Terraform providers.  
-- **Key point**: It doesn’t run inside the cloud resource — it runs on *your local workstation or CI/CD runner*.  
+
+Runs locally (your laptop or CI/CD runner).it runs on your local workstation or CI/CD runner.
+
+example:
+```bash
+resource "null_resource" "build_ami" {
+  provisioner "local-exec" {
+    command = "packer build aws-ami.pkr.hcl"
+  }
+}
+```
 
 
 ---
 
-
-Exactly right, Bilal 👌 — you’ve got the intuition: **`local-exec` runs commands on the same machine where you run `terraform apply`**. That could be your **laptop**, or a **CI/CD runner** (like GitLab CI, GitHub Actions, Jenkins, etc.).
-
-Let’s break it down super simple:
+Great, Bilal 👍 — let’s now contrast **`local-exec`** with **`remote-exec`** so you can see the difference clearly.
 
 ---
 
-## 🔹 What is `local-exec`?
-
-- Terraform normally creates cloud resources (EC2, S3, etc.).  
-- Sometimes you also want to run a **local command** right after a resource is created.  
-- That’s where `local-exec` comes in.  
-- It’s like saying: *“Terraform, after you finish this step, please run this command on my computer.”*
-
----
-
-## 🔹 Simple Example
-
-
-
-## Example (CI/CD)
-
-In GitLab CI, you might want Terraform to **trigger a Packer build** after creating a resource:
+## 🔹 `local-exec`
+- Runs **on your local machine or CI/CD runner** (where you run `terraform apply`).  
+- Useful for triggering external tools like `packer build`, `ansible-playbook`, or printing outputs.  
+- Example:
 
 ```hcl
 resource "null_resource" "build_ami" {
@@ -48,21 +38,39 @@ resource "null_resource" "build_ami" {
 }
 ```
 
-Here:
-- Terraform doesn’t create a real resource (we use `null_resource` as a placeholder).  
-- But it runs `packer build` locally — on your laptop or CI/CD runner.  
+👉 Here, Terraform runs `packer build` **on your laptop or pipeline runner**, not inside AWS.
 
 ---
 
-## 📖 Notes (Cheat Sheet)
+## 🔹 `remote-exec`
+- Runs **inside the cloud resource itself** (like an EC2 instance).  
+- Useful for configuring servers after they’re created (installing packages, running scripts).  
+- Example:
 
-- Runs **locally** (your laptop or CI/CD runner).  
-- Useful for:  
-  - Triggering scripts (`bash`, `python`, `packer build`)  
-  - Printing outputs  
-  - Sending notifications (curl, echo, etc.)  
-- Not for cloud actions — it’s purely local.  
+```hcl
+resource "aws_instance" "web" {
+  ami           = "ami-12345678"
+  instance_type = "t2.micro"
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum update -y",
+      "sudo yum install -y httpd",
+      "sudo systemctl start httpd"
+    ]
+  }
+}
+```
+
+👉 Here, Terraform connects via SSH to the EC2 instance and runs commands **inside the server**.
 
 ---
 
-Bilal, would you like me to also show you a **step-by-step mini workflow** where Terraform uses `local-exec` to run `packer build` and then launches an EC2 with that AMI? That would tie it directly to your series.
+## 📖 Cheat Sheet
+
+- **`local-exec`** → Runs commands **where Terraform runs** (your laptop or CI/CD).  
+- **`remote-exec`** → Runs commands **inside the resource** (e.g., inside EC2 via SSH).  
+
+---
+
+
