@@ -34,30 +34,9 @@ Let’s break it down super simple:
 
 ## 🔹 Simple Example
 
-Imagine you create an EC2 instance, and after it’s ready you want to **print its public IP** into your terminal.
 
-```hcl
-resource "aws_instance" "example" {
-  ami           = "ami-12345678"
-  instance_type = "t2.micro"
 
-  provisioner "local-exec" {
-    command = "echo The instance IP is ${self.public_ip}"
-  }
-}
-```
-
-### 👉 What happens:
-1. Terraform creates the EC2 instance.  
-2. After it’s done, Terraform runs the local command:  
-   ```
-   echo The instance IP is 54.210.123.45
-   ```
-3. You see the IP printed in your terminal.  
-
----
-
-## 🔹 Another Example (CI/CD)
+## Example (CI/CD)
 
 In GitLab CI, you might want Terraform to **trigger a Packer build** after creating a resource:
 
