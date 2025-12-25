@@ -1,21 +1,43 @@
 
 ---
 
-# Notes on `null_resource`
 
 **Date:** 25‑December‑2025  
 **Author:** Copilot  
 
+
+
+- **`null_resource`** by itself doesn’t create anything in AWS.  
+- When you attach **`local-exec`** to it, Terraform will run the command **locally** (on your laptop or CI/CD runner) during `terraform apply`.  
+- This is why people often use `null_resource` + `local-exec` together: it’s a neat way to glue Terraform with external tools like **Packer**, **Ansible**, or shell scripts.  
+
+### Mini Example
+```hcl
+resource "null_resource" "build_ami" {
+  provisioner "local-exec" {
+    command = "packer build aws-ami.pkr.hcl"
+  }
+}
+```
+
+👉 Here, Terraform doesn’t create infrastructure. It just runs `packer build` locally when you apply.  
+
 ---
 
-## 🔹 What is `null_resource`?
+So yes, your understanding is correct:  
+> **We use `null_resource` with `local-exec` when we want Terraform to run local commands as part of the workflow.**
+
+
+---
+
+## What is `null_resource`?
 - It doesn’t create anything in AWS, Azure, or GCP.  
 - **`null_resource`** is a dummy resource in Terraform.  
 - Its purpose is to run commands using provisioners (`local-exec` or `remote-exec`).  
 
 ---
 
-## 🔹 How It Works
+## How It Works
 - **With `local-exec`** → runs commands locally (on your laptop or CI/CD runner).  
 - **With `remote-exec`** → runs commands inside a cloud resource (e.g., after creating an EC2 instance).  
 
@@ -76,5 +98,3 @@ resource "null_resource" "configure_server" {
 > **`null_resource` is not used to create infrastructure, but to run commands — most often via `local-exec`.**
 
 ---
-
-Bilal, this polished version is now structured like a **study note** you can reuse in your series or personal knowledge base. Would you like me to also add a **diagram workflow** (Terraform → null_resource → local-exec → Packer → AMI → EC2) so you can visualize it quickly?
