@@ -86,6 +86,12 @@ resource "aws_instance" "web" {
 Got it Bilal 👍 — let’s simplify that long command step by step so it’s easy to understand:
 
 ---
+---
+---
+---
+---
+---
+
 
 ### Original Command
 ```bash
